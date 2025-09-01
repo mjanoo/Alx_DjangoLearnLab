@@ -1,5 +1,4 @@
 import mysql.connector
-from mysql.connector import errorcode
 
 # Database configuration
 config = {
@@ -15,10 +14,10 @@ try:
 
     # Create database
     cursor.execute("CREATE DATABASE alxbookstore")
-    print("Database 'alxbookstore' created successfully!")
+    print("Database alxbookstore created successfully!")
 
 except mysql.connector.Error as err:
-    print(f"Error: {err}")
+    print("Error:", err)
 
 finally:
     if 'cursor' in locals():
