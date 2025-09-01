@@ -14,7 +14,7 @@ try:
     cursor = conn.cursor()
 
     # Create database if it doesn't exist
-    cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
+    cursor.execute("CREATE DATABASE IF NOT EXISTS alxbookstore")
     print("Database 'alx_book_store' created successfully!")
 
 except mysql.connector.Error as err:
