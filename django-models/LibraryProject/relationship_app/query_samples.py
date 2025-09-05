@@ -6,6 +6,17 @@ from relationship_app.models import Author, Book
 def get_books_by_author(author_name):
     # Step 1: Get the Author object
     author = Author.objects.get(name=author_name)
+    from relationship_app.models import Library, Librarian
+
+def get_librarian_for_library(library_name):
+    # Step 1: Get the Library object
+    library = Library.objects.get(name=library_name)
+
+    # Step 2: Get the Librarian for that Library
+    librarian = Librarian.objects.get(library=library)
+
+    return librarian
+
 
     # Step 2: Get all Books by that Author
     return Book.objects.filter(author=author)
