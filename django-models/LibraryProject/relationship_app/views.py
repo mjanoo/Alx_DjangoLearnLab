@@ -64,3 +64,17 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "relationship_app/register.html", {"form": form})
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from .models import UserProfile
+
+@login_required
+def admin_view(request):
+    try:
+        profile = request.user.userprofile
+        if profile.role == "Admin":
+            return HttpResponse("Welcome Admin! This page is only for Admin users.")
+        else:
+            return HttpResponse("Access denied: You are not an Admin.")
+    except UserProfile.DoesNotExist:
+        return HttpResponse("No profile found for this user.")
