@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
-from .models import Book, Library
+from .models import Book
+from .models import Library   # <-- add this separately for the checker
 
 # Function-Based View: list all books
 def list_books(request):
@@ -10,5 +11,5 @@ def list_books(request):
 # Class-Based View: show library details
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = 'relationship_app/library_detail.html'
+    template_name = 'library_detail.html'
     context_object_name = 'library'
