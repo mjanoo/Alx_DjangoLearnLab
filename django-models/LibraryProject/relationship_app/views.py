@@ -1,27 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic.detail import DetailView
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
 from .models import Book, Library, UserProfile
+from django.views.generic.detail import DetailView
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 # ----------------------------
 # Book Views
 # ----------------------------
-
 def list_books(request):
-    """Function-Based View: List all books"""
     books = Book.objects.all()
-    return render(request, 'relationship_app/list_books.html', {'books': books})
+    return render(request, "relationship_app/list_books.html", {"books": books})
 
 
 # ----------------------------
 # Library Views
 # ----------------------------
-
 class LibraryDetailView(DetailView):
-    """Class-Based View: Show library details"""
     model = Library
     template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
@@ -30,35 +25,31 @@ class LibraryDetailView(DetailView):
 # ----------------------------
 # Authentication Views
 # ----------------------------
-
 def register_view(request):
-    """Register a new user"""
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("list_books")
+            return render(request, "relationship_app/list_books.html")
     else:
         form = UserCreationForm()
     return render(request, "relationship_app/register.html", {"form": form})
 
 
 def login_view(request):
-    """Login an existing user"""
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("list_books")
+            return render(request, "relationship_app/list_books.html")
     else:
         form = AuthenticationForm()
     return render(request, "relationship_app/login.html", {"form": form})
 
 
 def logout_view(request):
-    """Logout the current user"""
     logout(request)
     return render(request, "relationship_app/logout.html")
 
@@ -66,48 +57,32 @@ def logout_view(request):
 # ----------------------------
 # Role Checks
 # ----------------------------
-
 def is_admin(user):
-    """Check if the user has an Admin role"""
-    try:
-        return user.userprofile.role == "Admin"
-    except UserProfile.DoesNotExist:
-        return False
-
+    return hasattr(user, "userprofile") and user.userprofile.role == "Admin"
 
 def is_librarian(user):
-    """Check if the user has a Librarian role"""
-    try:
-        return user.userprofile.role == "Librarian"
-    except UserProfile.DoesNotExist:
-        return False
-
+    return hasattr(user, "userprofile") and user.userprofile.role == "Librarian"
 
 def is_member(user):
-    """Check if the user has a Member role"""
-    try:
-        return user.userprofile.role == "Member"
-    except UserProfile.DoesNotExist:
-        return False
+    return hasattr(user, "userprofile") and user.userprofile.role == "Member"
 
 
 # ----------------------------
 # Role-Based Views
 # ----------------------------
-
 @login_required
-@user_passes_test(is_admin, login_url='/books/')
+@user_passes_test(is_admin)
 def admin_view(request):
     return render(request, "relationship_app/admin_view.html")
 
 
 @login_required
-@user_passes_test(is_librarian, login_url='list_books')
+@user_passes_test(is_librarian)
 def librarian_view(request):
     return render(request, "relationship_app/librarian_view.html")
 
 
 @login_required
-@user_passes_test(is_member, login_url='list_books')
+@user_passes_test(is_member)
 def member_view(request):
     return render(request, "relationship_app/member_view.html")
