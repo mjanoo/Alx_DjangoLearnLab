@@ -64,7 +64,7 @@ def logout_view(request):
 
 
 # ----------------------------
-# Admin-Only View
+# Role Checks
 # ----------------------------
 
 def is_admin(user):
@@ -74,8 +74,40 @@ def is_admin(user):
     except UserProfile.DoesNotExist:
         return False
 
+
+def is_librarian(user):
+    """Check if the user has a Librarian role"""
+    try:
+        return user.userprofile.role == "Librarian"
+    except UserProfile.DoesNotExist:
+        return False
+
+
+def is_member(user):
+    """Check if the user has a Member role"""
+    try:
+        return user.userprofile.role == "Member"
+    except UserProfile.DoesNotExist:
+        return False
+
+
+# ----------------------------
+# Role-Based Views
+# ----------------------------
+
 @login_required
 @user_passes_test(is_admin, login_url='list_books')
 def admin_view(request):
-    """View only accessible by Admin users"""
-    return HttpResponse("Welcome Admin! This page is only for Admin users.")
+    return render(request, "relationship_app/admin_view.html")
+
+
+@login_required
+@user_passes_test(is_librarian, login_url='list_books')
+def librarian_view(request):
+    return render(request, "relationship_app/librarian_view.html")
+
+
+@login_required
+@user_passes_test(is_member, login_url='list_books')
+def member_view(request):
+    return render(request, "relationship_app/member_view.html")
