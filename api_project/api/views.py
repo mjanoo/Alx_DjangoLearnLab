@@ -1,16 +1,30 @@
-from rest_framework import viewsets, permissions, generics
+from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
 
-
-# ✅ Add this back for the quiz check
-class BookList(generics.ListAPIView):
+# -------------------------------
+# List all books / Create a new book
+# -------------------------------
+class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
+    # Only authenticated users can create
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
-# ✅ Keep your CRUD ViewSet
-class BookViewSet(viewsets.ModelViewSet):
+
+# -------------------------------
+# Retrieve / Update / Delete a book by ID
+# -------------------------------
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # restricts access
+
+    # Only authenticated users can update or delete
+    def get_permissions(self):
+        if self.request.method in ["PUT", "PATCH", "DELETE"]:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
