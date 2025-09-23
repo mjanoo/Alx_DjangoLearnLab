@@ -5,10 +5,11 @@ from .views import (
     BookListCreateView,
     BookDetailView,
     BookViewSet,
-    BookListView,
-    BookCreateView,
-    BookUpdateView,
-    BookDeleteView,
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
 )
 
 # Router for ViewSet
@@ -22,10 +23,11 @@ urlpatterns = [
     path("books/<int:pk>/", BookDetailView.as_view(), name="book-detail"),
 
     # ✅ Explicit generic class-based views
-    path("books/list/", BookListView.as_view(), name="book-list-view"),
-    path("books/create/", BookCreateView.as_view(), name="book-create-view"),
-    path("books/<int:pk>/update/", BookUpdateView.as_view(), name="book-update-view"),
-    path("books/<int:pk>/delete/", BookDeleteView.as_view(), name="book-delete-view"),
+    path("books/list/", ListView.as_view(), name="book-list-view"),
+    path("books/<int:pk>/detail/", DetailView.as_view(), name="book-detail-view"),
+    path("books/create/", CreateView.as_view(), name="book-create-view"),
+    path("books/<int:pk>/update/", UpdateView.as_view(), name="book-update-view"),
+    path("books/<int:pk>/delete/", DeleteView.as_view(), name="book-delete-view"),
 
     # ViewSet routes
     path("", include(router.urls)),

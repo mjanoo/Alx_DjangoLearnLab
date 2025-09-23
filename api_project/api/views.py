@@ -2,32 +2,37 @@ from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
 
-# ✅ Generic views required for quiz
-class BookListView(generics.ListAPIView):
+
+# ✅ List all books (open to anyone)
+class ListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # anyone can view
+    permission_classes = [permissions.AllowAny]
 
 
-class BookDetailView(generics.RetrieveAPIView):
+# ✅ Retrieve single book (open to anyone)
+class DetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # anyone can view
+    permission_classes = [permissions.AllowAny]
 
 
-class BookCreateView(generics.CreateAPIView):
+# ✅ Create a new book (authenticated users only)
+class CreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # must be logged in
+    permission_classes = [permissions.IsAuthenticated]
 
 
-class BookUpdateView(generics.UpdateAPIView):
+# ✅ Update an existing book (authenticated users only)
+class UpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # must be logged in
+    permission_classes = [permissions.IsAuthenticated]
 
 
-class BookDeleteView(generics.DestroyAPIView):
+# ✅ Delete a book (authenticated users only)
+class DeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # must be logged in
+    permission_classes = [permissions.IsAuthenticated]
